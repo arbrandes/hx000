@@ -1,0 +1,3 @@
+<%inherit file="lab.xml"/>\
+<%def name="section_name()">Part 2 Lab</%def>\
+<%def name="conditional()">part_1_lab</%def>\
