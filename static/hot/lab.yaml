@@ -207,8 +207,6 @@ resources:
       flavor: { get_param: flavor }
       user_data:  { get_resource: host_config }
       user_data_format: RAW
-      metadata:
-        wait_condition_data: { get_attr: [ proxy_ready, data ] }
       networks:
         - port: { get_resource: alice_management_port }
 
@@ -229,8 +227,6 @@ resources:
       flavor: { get_param: flavor }
       user_data:  { get_resource: host_config }
       user_data_format: RAW
-      metadata:
-        wait_condition_data: { get_attr: [ proxy_ready, data ] }
       networks:
         - port: { get_resource: bob_management_port }
 
@@ -251,8 +247,6 @@ resources:
       flavor: { get_param: flavor }
       user_data:  { get_resource: host_config }
       user_data_format: RAW
-      metadata:
-        wait_condition_data: { get_attr: [ proxy_ready, data ] }
       networks:
         - port: { get_resource: charlie_management_port }
 
