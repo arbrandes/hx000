@@ -4,7 +4,7 @@ parameters:
   flavor:
     type: string
     description: Flavor to use for servers
-    default: 1C-2GB
+    default: 1C-1GB-20GB
   public_net_id:
     type: string
     description: Public network ID
@@ -12,7 +12,7 @@ parameters:
   image:
     type: string
     description: Image ID or name
-    default: Ubuntu 16.04 Xenial Xerus
+    default: "Ubuntu 16.04 Xenial Xerus"
   timeout:
     type: number
     description: Timeout for stack creation to finish
@@ -23,7 +23,7 @@ resources:
     type: OS::Heat::WaitCondition
     properties:
       handle: {get_resource: all_done_handle}
-      count: 4
+      count: 2
       timeout: {get_param: timeout}
 
   all_done_handle:
@@ -53,8 +53,6 @@ resources:
               127.0.0.1 localhost
               192.168.122.100 deploy.example.com deploy
               192.168.122.111 alice.example.com alice
-              192.168.122.112 bob.example.com bob
-              192.168.122.113 charlie.example.com charlie
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
             content: { get_attr: [ training_key, private_key ] }
@@ -96,8 +94,6 @@ resources:
               127.0.0.1 localhost
               192.168.122.100 deploy.example.com deploy
               192.168.122.111 alice.example.com alice
-              192.168.122.112 bob.example.com bob
-              192.168.122.113 charlie.example.com charlie
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
             content: { get_attr: [ training_key, private_key ] }
@@ -121,7 +117,6 @@ resources:
       name: server_security_group
       rules:
       - remote_mode: 'remote_group_id'
-        remote_group_id:
         direction: ingress
       - remote_ip_prefix: 0.0.0.0/0
         protocol: tcp
@@ -216,46 +211,6 @@ resources:
       network_id: { get_resource: management_net }
       fixed_ips:
         - ip_address: 192.168.122.111
-      security_groups:
-        - { get_resource: server_security_group }
-
-  bob:
-    type: OS::Nova::Server
-    properties:
-      name: bob
-      image: { get_param: image }
-      flavor: { get_param: flavor }
-      user_data:  { get_resource: host_config }
-      user_data_format: RAW
-      networks:
-        - port: { get_resource: bob_management_port }
-
-  bob_management_port:
-    type: OS::Neutron::Port
-    properties:
-      network_id: { get_resource: management_net }
-      fixed_ips:
-        - ip_address: 192.168.122.112
-      security_groups:
-        - { get_resource: server_security_group }
-
-  charlie:
-    type: OS::Nova::Server
-    properties:
-      name: charlie
-      image: { get_param: image }
-      flavor: { get_param: flavor }
-      user_data:  { get_resource: host_config }
-      user_data_format: RAW
-      networks:
-        - port: { get_resource: charlie_management_port }
-
-  charlie_management_port:
-    type: OS::Neutron::Port
-    properties:
-      network_id: { get_resource: management_net }
-      fixed_ips:
-        - ip_address: 192.168.122.113
       security_groups:
         - { get_resource: server_security_group }
 

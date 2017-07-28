@@ -7,17 +7,5 @@
     logins=$(ssh alice last training | grep training | wc -l)
     [ $logins -ge 1 ] || exit 1
     exit 0
-  </test>
-  <test>
-    #!/bin/bash
-    logins=$(ssh bob last training | grep training | wc -l)
-    [ $logins -ge 1 ] || exit 1
-    exit 0
-  </test>
-  <test>
-    #!/bin/bash
-    logins=$(ssh charlie last training | grep training | wc -l)
-    [ $logins -ge 1 ] || exit 1
-    exit 0
   </test></%text>\
 </%block>

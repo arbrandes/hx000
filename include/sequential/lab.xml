@@ -53,7 +53,8 @@ ${self.partials.conditional(
   display_name="${self.lab_name()}"
   url_name="${self.lab_url()}"
   stack_template_path="hot_lab.yaml"
-  stack_user_name="training">
+  stack_user_name="training"
+  provider="city-dx1">
 ##
 ## "hastexo_tests" block.
 ##
