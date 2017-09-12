@@ -41,7 +41,7 @@ resources:
             gecos: Training User
             groups: users,adm
             ssh-authorized-keys:
-              - { get_attr: [ training_key, public_key ] }
+              - { get_attr: [ stack_key, public_key ] }
             lock-passwd: false
             shell: /bin/bash
             sudo: ALL=(ALL) NOPASSWD:ALL
@@ -55,7 +55,31 @@ resources:
               192.168.122.111 alice.example.com alice
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
-            content: { get_attr: [ training_key, private_key ] }
+            content: { get_attr: [ stack_key, private_key ] }
+          - path: /home/training/.vnc/xstartup
+            permissions: '0755'
+            content: |
+              #!/bin/bash
+              xrdb $HOME/.Xresources
+              startxfce4 &
+          - path: /etc/systemd/system/vncserver@.service
+            permissions: '0644'
+            content: |
+              [Unit]
+              Description=Start TightVNC server at startup
+              After=syslog.target network.target
+
+              [Service]
+              Type=forking
+              User=training
+              PAMName=login
+              PIDFile=/home/training/.vnc/%H:%i.pid
+              ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1
+              ExecStart=/usr/bin/vncserver -depth 24 -geometry 860x320 :%i
+              ExecStop=/usr/bin/vncserver -kill :%i
+
+              [Install]
+              WantedBy=multi-user.target
         ### package_update: refresh package on first boot
         package_update: false
         ### package_upgrade: runs package update on first boot
@@ -63,10 +87,23 @@ resources:
         ### packages: installs packages
         packages:
           - screen
+          - xfce4
+          - xfce4-goodies
+          - tightvncserver
         runcmd:
           - cp /etc/skel/.??* /home/training
           - echo "exec /usr/bin/screen -xRR" >> /home/training/.profile
+          - mkdir -p /home/training/.vnc
+          - str_replace:
+              template: echo "%password%" | vncpasswd -f > /home/training/.vnc/passwd
+              params:
+                "%password%": { get_resource: stack_password }
+          - chmod 0700 /home/training/.vnc
+          - chmod 0600 /home/training/.vnc/passwd
           - chown -R training:training /home/training
+          - systemctl daemon-reload
+          - systemctl enable vncserver@1.service
+          - systemctl start vncserver@1
           - sleep `bash -c 'echo $[($RANDOM % 10) + 1]'`
           - { get_attr: ['all_done_handle', 'curl_cli'] }
 
@@ -82,7 +119,7 @@ resources:
             gecos: Training User
             groups: users,adm
             ssh-authorized-keys:
-              - { get_attr: [ training_key, public_key ] }
+              - { get_attr: [ stack_key, public_key ] }
             lock-passwd: false
             shell: /bin/bash
             sudo: ALL=(ALL) NOPASSWD:ALL
@@ -96,7 +133,7 @@ resources:
               192.168.122.111 alice.example.com alice
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
-            content: { get_attr: [ training_key, private_key ] }
+            content: { get_attr: [ stack_key, private_key ] }
         ### package_update: refresh package on first boot
         package_update: false
         ### package_upgrade: runs package update on first boot
@@ -124,13 +161,23 @@ resources:
         port_range_min: 22
         port_range_max: 22
       - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+        port_range_min: 5901
+        port_range_max: 5901
+      - remote_ip_prefix: 0.0.0.0/0
         protocol: icmp
 
-  training_key:
+  stack_key:
     type: OS::Nova::KeyPair
     properties:
       name: { get_param: 'OS::stack_name' }
       save_private_key: true
+
+  stack_password:
+    type: OS::Heat::RandomString
+    properties:
+      length: 32
 
   management_net:
     type: OS::Neutron::Net
@@ -219,5 +266,8 @@ outputs:
     description: Floating IP address of deploy in public network
     value: { get_attr: [ deploy_floating_ip, floating_ip_address ] }
   private_key:
-    description: Training private key
-    value: { get_attr: [ training_key, private_key ] }
+    description: Stack private key
+    value: { get_attr: [ stack_key, private_key ] }
+  password:
+    description: Stack password
+    value: { get_resource: stack_password }
