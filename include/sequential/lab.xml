@@ -54,7 +54,7 @@ ${self.partials.conditional(
   url_name="${self.lab_url()}"
   stack_template_path="hot_lab.yaml"
   stack_user_name="training"
-  stack_protocol="ssh">
+  stack_protocol="rdp">
   <option:providers>
     - name: city-lon1
       capacity: -1
