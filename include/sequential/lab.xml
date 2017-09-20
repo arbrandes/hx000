@@ -54,14 +54,11 @@ ${self.partials.conditional(
   url_name="${self.lab_url()}"
   stack_template_path="hot_lab.yaml"
   stack_user_name="training"
-  stack_protocol="ssh">
+  stack_protocol="rdp">
   <option:providers>
-    - name: city-lon1
-      capacity: 1
-      environment: hot_city-lon1.yaml
-    - name: city-buf1
-      capacity: 0
-      environment: hot_city-buf1.yaml
+    - name: city-dx1
+      capacity: -1
+      environment: hot_city-dx1.yaml
   </option:providers>
   <option:tests><![CDATA[\
   <%block name="hastexo_tests">
