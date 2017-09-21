@@ -48,13 +48,6 @@ resources:
             lock-passwd: false
             shell: /bin/bash
             sudo: ALL=(ALL) NOPASSWD:ALL
-        chpasswd:
-          list:
-            str_replace:
-              template: training:%password%
-              params:
-                "%password%": { get_resource: stack_password }
-          expire: false
         ### write_files: writes arbitrary files
         write_files:
           - path: /etc/hosts
@@ -66,10 +59,30 @@ resources:
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
             content: { get_attr: [ stack_key, private_key ] }
-          - path: /home/training/.xsession
+          - path: /home/training/.vnc/xstartup
+            permissions: '0755'
+            content: |
+              #!/bin/bash
+              xrdb $HOME/.Xresources
+              startxfce4 &
+          - path: /etc/systemd/system/vncserver@.service
             permissions: '0644'
             content: |
-              xfce4-session
+              [Unit]
+              Description=Start TightVNC server at startup
+              After=syslog.target network.target
+
+              [Service]
+              Type=forking
+              User=training
+              PAMName=login
+              PIDFile=/home/training/.vnc/%H:%i.pid
+              ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1
+              ExecStart=/usr/bin/vncserver -depth 24 -geometry 860x640 :%i
+              ExecStop=/usr/bin/vncserver -kill :%i
+
+              [Install]
+              WantedBy=multi-user.target
         ### package_update: refresh package on first boot
         package_update: false
         ### package_upgrade: runs package update on first boot
@@ -79,11 +92,21 @@ resources:
           - screen
           - xfce4
           - xfce4-goodies
-          - xrdp
+          - tightvncserver
         runcmd:
           - cp /etc/skel/.??* /home/training
           - echo "exec /usr/bin/screen -xRR" >> /home/training/.profile
+          - mkdir -p /home/training/.vnc
+          - str_replace:
+              template: echo "%password%" | vncpasswd -f > /home/training/.vnc/passwd
+              params:
+                "%password%": { get_resource: stack_password }
+          - chmod 0700 /home/training/.vnc
+          - chmod 0600 /home/training/.vnc/passwd
           - chown -R training:training /home/training
+          - systemctl daemon-reload
+          - systemctl enable vncserver@1.service
+          - systemctl start vncserver@1
           - sleep `bash -c 'echo $[($RANDOM % 10) + 1]'`
           - { get_attr: ['all_done_handle', 'curl_cli'] }
 
@@ -143,8 +166,8 @@ resources:
       - remote_ip_prefix: 0.0.0.0/0
         protocol: tcp
         direction: ingress
-        port_range_min: 3389
-        port_range_max: 3389
+        port_range_min: 5901
+        port_range_max: 5901
       - remote_ip_prefix: 0.0.0.0/0
         protocol: icmp
 
