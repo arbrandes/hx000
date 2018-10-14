@@ -55,7 +55,7 @@ ${self.partials.conditional(
   stack_template_path="hot_lab.yaml"
   stack_user_name="training"
   stack_protocol="ssh"
-  provider="city-tky1">
+  provider="city-lon1">
 ##
 ## "hastexo_tests" block.
 ##
