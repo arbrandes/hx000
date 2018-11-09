@@ -56,7 +56,6 @@ ${self.partials.conditional(
   stack_user_name="training"
   stack_protocol="ssh">
   <provider name="city-lon1" capacity="1" environment="hot_city-lon1.yaml" />
-  <provider name="city-buf1" capacity="0" environment="hot_city-buf1.yaml" />
 ##
 ## "hastexo_tests" block.
 ##
