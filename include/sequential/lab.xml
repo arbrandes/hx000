@@ -49,20 +49,21 @@ ${self.partials.conditional(
   block_type="hastexo",
   url_name=capture(self.conditional))}
 % endif
-<hastexo
+<hastexo xmlns:option="http://code.edx.org/xblock/option"
   display_name="${self.lab_name()}"
   url_name="${self.lab_url()}"
   stack_template_path="hot_lab.yaml"
   stack_user_name="training"
   stack_protocol="ssh">
-  <provider name="city-lon1" capacity="1" environment="hot_city-lon1.yaml" />
-##
-## "hastexo_tests" block.
-##
-<%block name="hastexo_tests" />
-##
-## End of hastexo block.
-##
+  <option:providers>
+    - name: city-lon1
+      capacity: 1
+      environment: hot_city-lon1.yaml
+    - name: city-buf1
+      capacity: 0
+      environment: hot_city-buf1.yaml
+  </option:providers>
+  <option:tests><%block name="hastexo_tests">[]</%block></option:tests>
 </hastexo>
 % if capture(self.conditional):
 </conditional>
