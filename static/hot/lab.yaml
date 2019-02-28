@@ -22,16 +22,6 @@ parameters:
     default: 900
 
 resources:
-  all_done:
-    type: OS::Heat::WaitCondition
-    properties:
-      handle: {get_resource: all_done_handle}
-      count: 2
-      timeout: {get_param: timeout}
-
-  all_done_handle:
-    type: OS::Heat::WaitConditionHandle
-
   deploy_config:
     type: OS::Heat::CloudConfig
     properties:
@@ -46,7 +36,7 @@ resources:
             ssh-authorized-keys:
               - { get_attr: [ stack_key, public_key ] }
             lock-passwd: false
-            shell: /bin/bash
+            shell: /bin/false
             sudo: ALL=(ALL) NOPASSWD:ALL
         chpasswd:
           list:
@@ -66,10 +56,6 @@ resources:
           - path: /home/training/.ssh/id_rsa
             permissions: '0600'
             content: { get_attr: [ stack_key, private_key ] }
-          - path: /home/training/.xsession
-            permissions: '0644'
-            content: |
-              xfce4-session
         ### package_update: refresh package on first boot
         package_update: false
         ### package_upgrade: runs package update on first boot
@@ -77,55 +63,11 @@ resources:
         ### packages: installs packages
         packages:
           - screen
-          - xfce4
-          - xfce4-goodies
-          - xrdp
         runcmd:
           - cp /etc/skel/.??* /home/training
           - echo "exec /usr/bin/screen -xRR" >> /home/training/.profile
           - chown -R training:training /home/training
-          - sleep `bash -c 'echo $[($RANDOM % 10) + 1]'`
-          - { get_attr: ['all_done_handle', 'curl_cli'] }
-
-  host_config:
-    type: OS::Heat::CloudConfig
-    properties:
-      cloud_config:
-        ## users: defines users, sets passwords and SSH authorized keys, and
-        ### enables sudo privileges.
-        users:
-          - default
-          - name: training
-            gecos: Training User
-            groups: users,adm
-            ssh-authorized-keys:
-              - { get_attr: [ stack_key, public_key ] }
-            lock-passwd: false
-            shell: /bin/bash
-            sudo: ALL=(ALL) NOPASSWD:ALL
-        ### write_files: writes arbitrary files
-        write_files:
-          - path: /etc/hosts
-            permissions: '0644'
-            content: |
-              127.0.0.1 localhost
-              192.168.122.100 deploy.example.com deploy
-              192.168.122.111 alice.example.com alice
-          - path: /home/training/.ssh/id_rsa
-            permissions: '0600'
-            content: { get_attr: [ stack_key, private_key ] }
-        ### package_update: refresh package on first boot
-        package_update: false
-        ### package_upgrade: runs package update on first boot
-        package_upgrade: false
-        ### packages: installs packages
-        packages:
-          - screen
-        runcmd:
-          - cp /etc/skel/.??* /home/training
-          - chown -R training:training /home/training
-          - sleep `bash -c 'echo $[($RANDOM % 10) + 1]'`
-          - { get_attr: ['all_done_handle', 'curl_cli'] }
+          - chsh -s /bin/bash training
 
   server_security_group:
     type: OS::Neutron::SecurityGroup
@@ -220,26 +162,6 @@ resources:
       floating_network_id: { get_param: public_net_id }
       port_id: { get_resource: deploy_management_port }
       fixed_ip_address: 192.168.122.100
-
-  alice:
-    type: OS::Nova::Server
-    properties:
-      name: alice
-      image: { get_param: image }
-      flavor: { get_param: flavor }
-      user_data:  { get_resource: host_config }
-      user_data_format: RAW
-      networks:
-        - port: { get_resource: alice_management_port }
-
-  alice_management_port:
-    type: OS::Neutron::Port
-    properties:
-      network_id: { get_resource: management_net }
-      fixed_ips:
-        - ip_address: 192.168.122.111
-      security_groups:
-        - { get_resource: server_security_group }
 
 outputs:
   public_ip:

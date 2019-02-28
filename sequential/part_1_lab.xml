@@ -3,11 +3,19 @@
 <%block name="hastexo_tests"><%text>
     - |
       #!/bin/bash
-      # Check for alice login
-      logins=$(ssh alice last training | grep training | wc -l)
-      if [ $logins -lt 1 ]; then
-        # Output a hint to stderr
-        echo "You haven't logged in to alice, yet." >&2
+      # Check for file
+      file=foo
+      if [ ! -e ${file} ]; then
+        echo "File \"${file}\" doesn't exist." >&2
+        exit 1
+      fi
+      exit 0
+    - |
+      #!/bin/bash
+      # Check for file
+      file=bar
+      if [ ! -e ${file} ]; then
+        echo "File \"${file}\" doesn't exist." >&2
         exit 1
       fi
       exit 0
