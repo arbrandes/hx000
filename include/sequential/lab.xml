@@ -63,11 +63,11 @@ ${self.partials.conditional(
       capacity: 0
       environment: hot_city-buf1.yaml
   </option:providers>
-  <option:tests>\
+  <option:tests><![CDATA[\
   <%block name="hastexo_tests">
     []
   </%block>\
-  </option:tests>
+  ]]></option:tests>
 </hastexo>
 % if capture(self.conditional):
 </conditional>
