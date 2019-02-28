@@ -57,11 +57,8 @@ ${self.partials.conditional(
   stack_protocol="ssh">
   <option:providers>
     - name: city-lon1
-      capacity: 1
+      capacity: -1
       environment: hot_city-lon1.yaml
-    - name: city-buf1
-      capacity: 0
-      environment: hot_city-buf1.yaml
   </option:providers>
   <option:tests><![CDATA[\
   <%block name="hastexo_tests">
