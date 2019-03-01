@@ -1,6 +1,30 @@
-<%inherit file="lab.xml"/>\
-<%def name="section_name()">Part 1 Lab</%def>\
-<%block name="hastexo_tests"><%text>
+<sequential
+  url_name="part_1_lab"
+  display_name="Part 1 Lab"
+  graded="true"
+  format="Lab">
+
+<vertical
+  url_name="part_1_lab_unit"
+  display_name="Lab">
+
+<html
+  url_name="part_1_lab_instructions"
+  filename="part_1_lab_instructions"
+  display_name="Part 1 Lab Instructions"/>
+
+<hastexo xmlns:option="http://code.edx.org/xblock/option"
+  display_name="Part 1 Lab"
+  url_name="part_1_lab"
+  stack_template_path="hot_lab.yaml"
+  stack_user_name="training"
+  stack_protocol="ssh">
+  <option:providers>
+    - name: city-lon1
+      capacity: -1
+      environment: hot_city-lon1.yaml
+  </option:providers>
+  <option:tests><![CDATA[  
     - |
       #!/bin/bash
       # Check for file
@@ -21,4 +45,9 @@
         exit 1
       fi
       exit 0
-</%text></%block>
+  ]]></option:tests>
+</hastexo>
+
+</vertical>
+
+</sequential>

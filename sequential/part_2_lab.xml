@@ -1,3 +1,39 @@
-<%inherit file="lab.xml"/>\
-<%def name="section_name()">Part 2 Lab</%def>\
-<%def name="conditional()">part_1_lab</%def>\
+<sequential
+  url_name="part_2_lab"
+  display_name="Part 2 Lab"
+  graded="true"
+  format="Lab">
+
+<vertical
+  url_name="part_2_lab_unit"
+  display_name="Lab">
+
+<html
+  url_name="part_2_lab_instructions"
+  filename="part_2_lab_instructions"
+  display_name="Part 2 Lab Instructions"/>
+
+<conditional
+  sources="block-v1:hastexo+hx000+progress-check-hints+type@hastexo+block@part_1_lab"
+  correct="True"
+  message="You must complete {link} before this exercise will be made available.">
+<hastexo xmlns:option="http://code.edx.org/xblock/option"
+  display_name="Part 2 Lab"
+  url_name="part_2_lab"
+  stack_template_path="hot_lab.yaml"
+  stack_user_name="training"
+  stack_protocol="ssh">
+  <option:providers>
+    - name: city-lon1
+      capacity: -1
+      environment: hot_city-lon1.yaml
+  </option:providers>
+  <option:tests><![CDATA[  
+    []
+    ]]></option:tests>
+</hastexo>
+</conditional>
+
+</vertical>
+
+</sequential>
