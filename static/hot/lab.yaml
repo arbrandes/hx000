@@ -71,9 +71,9 @@ resources:
             content: |
               xfce4-session
         ### package_update: refresh package on first boot
-        package_update: false
+        package_update: true
         ### package_upgrade: runs package update on first boot
-        package_upgrade: false
+        package_upgrade: true
         ### packages: installs packages
         packages:
           - screen
@@ -115,9 +115,9 @@ resources:
             permissions: '0600'
             content: { get_attr: [ stack_key, private_key ] }
         ### package_update: refresh package on first boot
-        package_update: false
+        package_update: true
         ### package_upgrade: runs package update on first boot
-        package_upgrade: false
+        package_upgrade: true
         ### packages: installs packages
         packages:
           - screen
