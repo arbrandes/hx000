@@ -1,4 +1,26 @@
-<%namespace file="/olx_partials.xml" import="asset_policy"/>\
 {
-${asset_policy(u"images/course_image.jpg", u"image/jpeg", True, False)}
+    "images_course_image.jpg": {
+        "contentType": "image/jpeg",
+        "content_son": {
+            "category": "asset",
+            "course": "hx000",
+            "name": "images_course_image.jpg",
+            "org": "hastexo",
+            "revision": null,
+            "run": "rdp-dx1",
+            "tag": "c4x"
+        },
+        "displayname": "course_image.jpg",
+        "filename": "asset-v1:hastexo+hx000+rdp-dx1+type@asset+block@images_course_image.jpg",
+        "import_path": "images/course_image.jpg",
+        "locked": false,
+        "thumbnail_location": [
+            "c4x",
+            "hastexo",
+            "hx000",
+            "thumbnail",
+            "images_course_image.jpg",
+            null
+        ]
+    }
 }

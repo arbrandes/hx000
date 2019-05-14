@@ -1,1 +1,45 @@
-../include/html/lab.html
+
+<div class="lab_instructions">
+<h2>Overview</h2>
+
+<p>The lab environment consists of two virtual machines, accessible via the
+following local IP addresses.</p>
+
+<ul>
+<li><em>deploy</em>: <strong><code>192.168.122.100</code></strong></li>
+<li><em>alice</em>: <strong><code>192.168.122.111</code></strong></li>
+</ul>
+
+<p>The <em>deploy</em> node is the only machine with a publicly available IP address.
+Your terminal automatically connects to <em>deploy</em>.</p>
+
+<p>When you connect to <em>deploy</em>, you automatically enter a <code>screen</code> session.
+<code>screen</code> is a terminal multiplexer that, among other things, allows you
+reconnect to a previous session.  This means that if you close the browser page
+and return to the exercise later on, your session, including scrollback and
+command history, will be exactly as you left it.</p>
+
+<h2>SSH Between Nodes</h2>
+
+<p>You can use SSH from <em>deploy</em> to hop to the other nodes.  To connect to
+<em>alice</em>, follow these instructions using the terminal below:</p>
+
+<ol>
+<li><p>From the <em>deploy</em> node (it's where you start out), SSH into <em>alice</em> by
+entering:</p>
+
+<pre><code>$ ssh alice
+</code></pre></li>
+<li><p>To confirm the authenticity of the host, enter "yes" at the prompt.</p></li>
+<li><p>Type the following to return to <code>deploy</code>:</p>
+
+<pre><code>$ exit
+</code></pre></li>
+</ol>
+
+<blockquote>
+  <p>Note: Whenever specific instructions are given as the ones above, do your
+  best to execute them as stated.  You will be graded on the results.</p>
+</blockquote>
+</div>
+
