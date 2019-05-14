@@ -1,9 +1,6 @@
 heat_template_version: 2015-04-30
 
 parameters:
-  run:
-    type: string
-    description: Stack run
   flavor:
     type: string
     description: Flavor to use for servers
