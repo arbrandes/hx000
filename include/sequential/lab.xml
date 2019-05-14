@@ -56,9 +56,9 @@ ${self.partials.conditional(
   stack_user_name="training"
   stack_protocol="rdp">
   <option:providers>
-    - name: city-lon1
+    - name: city-fra1
       capacity: -1
-      environment: hot_city-lon1.yaml
+      environment: hot_city-fra1.yaml
   </option:providers>
   <option:tests><![CDATA[\
   <%block name="hastexo_tests">

@@ -1,0 +1,4 @@
+parameters:
+  flavor: 1C-1GB-20GB
+  public_net_id: ext-net
+  timeout: 600
